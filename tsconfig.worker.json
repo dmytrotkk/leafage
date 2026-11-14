@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.worker.tsbuildinfo",
+    "types": ["@cloudflare/workers-types"],
+    "resolveJsonModule": true,
+    "paths": { "@leafage/core": ["./core/index.ts"] }
+  },
+  "include": ["worker"]
+}

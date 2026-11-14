@@ -1,0 +1,1055 @@
+{
+  "constraints": {
+    "care_profile.care_profile_pkey": "PRIMARY KEY (id)",
+    "care_profile.care_profile_substrate_id_fkey": "FOREIGN KEY (substrate_id) REFERENCES substrate(id)",
+    "events.events_data_shape": "CHECK (jsonb_matches_schema(event_schema(type), COALESCE(data, 'null'::jsonb)))",
+    "events.events_id_owner_id_key": "UNIQUE (id, owner_id)",
+    "events.events_owner_id_fkey": "FOREIGN KEY (owner_id) REFERENCES auth.users(id) ON DELETE CASCADE",
+    "events.events_photo_path": "CHECK (((type = 'photo'::event_type) = (photo_url IS NOT NULL)))",
+    "events.events_pkey": "PRIMARY KEY (id)",
+    "events.events_plant_id_owner_id_fkey": "FOREIGN KEY (plant_id, owner_id) REFERENCES plants(id, owner_id)",
+    "events.events_plant_required": "CHECK (((plant_id IS NOT NULL) OR (type = ANY (ARRAY['note'::event_type, 'photo'::event_type]))))",
+    "events.events_void_reason": "CHECK (((voided_at IS NULL) = (voided_reason IS NULL)))",
+    "feed_override.feed_override_dose_factor_check": "CHECK (((dose_factor > (0)::numeric) AND (dose_factor <= (1)::numeric)))",
+    "feed_override.feed_override_owner_id_fkey": "FOREIGN KEY (owner_id) REFERENCES auth.users(id) ON DELETE CASCADE",
+    "feed_override.feed_override_pkey": "PRIMARY KEY (plant_id, supplement_id)",
+    "feed_override.feed_override_plant_id_owner_id_fkey": "FOREIGN KEY (plant_id, owner_id) REFERENCES plants(id, owner_id)",
+    "feed_override.feed_override_supplement_id_fkey": "FOREIGN KEY (supplement_id) REFERENCES supplement(id)",
+    "pest_case.pest_case_check": "CHECK (((status = 'cleared'::pest_status) = (closed_at IS NOT NULL)))",
+    "pest_case.pest_case_check1": "CHECK (((rounds = 0) = (last_treated IS NULL)))",
+    "pest_case.pest_case_owner_id_fkey": "FOREIGN KEY (owner_id) REFERENCES auth.users(id) ON DELETE CASCADE",
+    "pest_case.pest_case_pkey": "PRIMARY KEY (id)",
+    "pest_case.pest_case_plant_id_owner_id_fkey": "FOREIGN KEY (plant_id, owner_id) REFERENCES plants(id, owner_id)",
+    "plants.plants_check": "CHECK (((origin_date IS NULL) = (origin_date_precision IS NULL)))",
+    "plants.plants_check1": "CHECK (((archived_at IS NULL) = (archived_reason IS NULL)))",
+    "plants.plants_check2": "CHECK (((repot_target_cm IS NULL) = (repot_after IS NULL)))",
+    "plants.plants_cover_event_id_owner_id_fkey": "FOREIGN KEY (cover_event_id, owner_id) REFERENCES events(id, owner_id)",
+    "plants.plants_id_owner_id_key": "UNIQUE (id, owner_id)",
+    "plants.plants_individuals_check": "CHECK ((individuals >= 1))",
+    "plants.plants_owner_id_fkey": "FOREIGN KEY (owner_id) REFERENCES auth.users(id) ON DELETE CASCADE",
+    "plants.plants_owner_id_name_key": "UNIQUE (owner_id, name)",
+    "plants.plants_pkey": "PRIMARY KEY (id)",
+    "plants.plants_pot_id_owner_id_fkey": "FOREIGN KEY (pot_id, owner_id) REFERENCES pots(id, owner_id)",
+    "plants.plants_taxon_id_fkey": "FOREIGN KEY (taxon_id) REFERENCES taxon(id)",
+    "plants.plants_water_interval_days_check": "CHECK (((water_interval_days >= 1) AND (water_interval_days <= 60)))",
+    "pots.pots_diameter_cm_check": "CHECK ((diameter_cm > (0)::numeric))",
+    "pots.pots_height_cm_check": "CHECK ((height_cm > (0)::numeric))",
+    "pots.pots_id_owner_id_key": "UNIQUE (id, owner_id)",
+    "pots.pots_owner_id_fkey": "FOREIGN KEY (owner_id) REFERENCES auth.users(id) ON DELETE CASCADE",
+    "pots.pots_owner_id_label_key": "UNIQUE (owner_id, label)",
+    "pots.pots_pkey": "PRIMARY KEY (id)",
+    "pots.pots_substrate_id_fkey": "FOREIGN KEY (substrate_id) REFERENCES substrate(id)",
+    "profiles.profiles_id_fkey": "FOREIGN KEY (id) REFERENCES auth.users(id) ON DELETE CASCADE",
+    "profiles.profiles_pkey": "PRIMARY KEY (id)",
+    "profiles.profiles_timezone_check": "CHECK ((('2000-01-01 00:00:00+00'::timestamp with time zone AT TIME ZONE timezone) IS NOT NULL))",
+    "programme.programme_dose_factor_check": "CHECK (((dose_factor > (0)::numeric) AND (dose_factor <= (1)::numeric)))",
+    "programme.programme_pkey": "PRIMARY KEY (profile_id, supplement_id)",
+    "programme.programme_profile_id_fkey": "FOREIGN KEY (profile_id) REFERENCES care_profile(id)",
+    "programme.programme_season_end_check": "CHECK (((season_end >= 1) AND (season_end <= 12)))",
+    "programme.programme_season_start_check": "CHECK (((season_start >= 1) AND (season_start <= 12)))",
+    "programme.programme_supplement_id_fkey": "FOREIGN KEY (supplement_id) REFERENCES supplement(id)",
+    "substrate.substrate_owner_id_fkey": "FOREIGN KEY (owner_id) REFERENCES auth.users(id) ON DELETE CASCADE",
+    "substrate.substrate_owner_id_label_key": "UNIQUE NULLS NOT DISTINCT (owner_id, label)",
+    "substrate.substrate_pkey": "PRIMARY KEY (id)",
+    "substrate_part.substrate_part_percent_check": "CHECK (((percent >= 1) AND (percent <= 100)))",
+    "substrate_part.substrate_part_pkey": "PRIMARY KEY (substrate_id, component)",
+    "substrate_part.substrate_part_substrate_id_fkey": "FOREIGN KEY (substrate_id) REFERENCES substrate(id)",
+    "supplement.supplement_owner_id_fkey": "FOREIGN KEY (owner_id) REFERENCES auth.users(id) ON DELETE CASCADE",
+    "supplement.supplement_owner_id_label_key": "UNIQUE NULLS NOT DISTINCT (owner_id, label)",
+    "supplement.supplement_pkey": "PRIMARY KEY (id)",
+    "tasks.tasks_check": "CHECK (((status = 'todo'::task_status) = (completed_at IS NULL)))",
+    "tasks.tasks_owner_id_fkey": "FOREIGN KEY (owner_id) REFERENCES auth.users(id) ON DELETE CASCADE",
+    "tasks.tasks_pkey": "PRIMARY KEY (id)",
+    "tasks.tasks_plant_id_owner_id_fkey": "FOREIGN KEY (plant_id, owner_id) REFERENCES plants(id, owner_id)",
+    "tasks.tasks_priority_check": "CHECK (((priority >= 1) AND (priority <= 3)))",
+    "taxon.taxon_pkey": "PRIMARY KEY (id)",
+    "taxon.taxon_profile_id_fkey": "FOREIGN KEY (profile_id) REFERENCES care_profile(id)"
+  },
+  "default_acl": {
+    "S": "postgres=rwU/postgres",
+    "f": "postgres=X/postgres",
+    "r": "postgres=arwdDxtm/postgres"
+  },
+  "enums": {
+    "archive_reason": [
+      "dead",
+      "given_away",
+      "lost",
+      "mistake"
+    ],
+    "condition": [
+      "critical",
+      "poor",
+      "stressed",
+      "good",
+      "thriving"
+    ],
+    "date_precision": [
+      "day",
+      "month",
+      "year"
+    ],
+    "disorder": [
+      "underwatering",
+      "overwatering",
+      "waterlogging",
+      "salt_buildup",
+      "low_light",
+      "sunburn",
+      "wind_damage",
+      "cold_damage",
+      "rootbound",
+      "n_deficiency",
+      "mg_deficiency",
+      "fe_deficiency"
+    ],
+    "event_type": [
+      "watering",
+      "feed",
+      "treatment",
+      "repot",
+      "prune",
+      "measure",
+      "diagnosis",
+      "move",
+      "photo",
+      "note"
+    ],
+    "feed_method": [
+      "incorporate",
+      "drench",
+      "foliar"
+    ],
+    "feed_status": [
+      "overdue",
+      "due",
+      "scheduled",
+      "held",
+      "off_season",
+      "recommended"
+    ],
+    "light_level": [
+      "bright_shade",
+      "part_sun",
+      "full_sun"
+    ],
+    "location_zone": [
+      "indoor",
+      "balcony",
+      "quarantine"
+    ],
+    "nutrient": [
+      "n",
+      "p",
+      "k",
+      "mg",
+      "fe",
+      "micro"
+    ],
+    "origin_type": [
+      "seed",
+      "cutting",
+      "graft",
+      "nursery"
+    ],
+    "pest": [
+      "spider_mites",
+      "mealybugs",
+      "scale",
+      "aphids",
+      "whitefly",
+      "thrips",
+      "ants",
+      "root_rot",
+      "fungal_leaf_spot"
+    ],
+    "pest_status": [
+      "suspected",
+      "confirmed",
+      "treating",
+      "cleared"
+    ],
+    "phenophase": [
+      "dormant",
+      "vegetative",
+      "flowering",
+      "fruiting"
+    ],
+    "photo_shot": [
+      "full",
+      "closeup",
+      "leaves",
+      "underside",
+      "soil",
+      "roots",
+      "pot",
+      "group"
+    ],
+    "pot_fit": [
+      "unplanned",
+      "step_up",
+      "undersized"
+    ],
+    "pot_material": [
+      "plastic",
+      "glazed_ceramic",
+      "terracotta",
+      "glass"
+    ],
+    "pot_status": [
+      "in_use",
+      "empty",
+      "retired"
+    ],
+    "prune_part": [
+      "canopy",
+      "roots",
+      "deadwood",
+      "flowers",
+      "suckers"
+    ],
+    "root_condition": [
+      "healthy",
+      "rootbound",
+      "circling",
+      "dry",
+      "rotted",
+      "unknown"
+    ],
+    "substrate_component": [
+      "potting_mix",
+      "perlite",
+      "grit",
+      "sand",
+      "bark",
+      "coir"
+    ],
+    "supplement_form": [
+      "controlled_release",
+      "liquid",
+      "soluble"
+    ],
+    "supplement_role": [
+      "feed",
+      "corrective",
+      "biostimulant"
+    ],
+    "symptom": [
+      "chlorosis",
+      "interveinal_chlorosis",
+      "necrosis",
+      "tip_dieback",
+      "leaf_drop",
+      "wilting",
+      "curling",
+      "scorch",
+      "etiolation",
+      "stippling",
+      "webbing",
+      "honeydew",
+      "sooty_mold",
+      "stunted",
+      "no_fruit"
+    ],
+    "task_kind": [
+      "water",
+      "feed",
+      "pest",
+      "pot",
+      "light",
+      "prune",
+      "inspect",
+      "photo",
+      "shop",
+      "other"
+    ],
+    "task_status": [
+      "todo",
+      "done",
+      "skipped"
+    ],
+    "trend": [
+      "improving",
+      "steady",
+      "declining"
+    ],
+    "water_regime": [
+      "drought_tolerant",
+      "dry_top",
+      "evenly_moist"
+    ],
+    "water_status": [
+      "overdue",
+      "due",
+      "soon",
+      "ok"
+    ],
+    "watering_method": [
+      "top",
+      "basin",
+      "soak"
+    ]
+  },
+  "functions": {
+    "archive_plant(plant text, reason archive_reason)": {
+      "anon": false,
+      "authenticated": true,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "v"
+    },
+    "at_or_now(at timestamp with time zone)": {
+      "anon": false,
+      "authenticated": false,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": false,
+      "public": false,
+      "volatility": "s"
+    },
+    "catalog_global_only()": {
+      "anon": false,
+      "authenticated": false,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "v"
+    },
+    "check_enum(field text, value text, t regtype)": {
+      "anon": false,
+      "authenticated": false,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": false,
+      "public": false,
+      "volatility": "s"
+    },
+    "complete_task(tasks jsonb, status task_status)": {
+      "anon": false,
+      "authenticated": true,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "v"
+    },
+    "create_plant(name text, taxon text, origin origin_type, origin_date date, origin_date_precision date_precision, individuals smallint, water_interval_days smallint, location location_zone, light light_level, condition condition, phase phenophase, height_cm numeric, pot text, substrate text, notes text, at timestamp with time zone)": {
+      "anon": false,
+      "authenticated": true,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "v"
+    },
+    "create_pot(label text, material pot_material, diameter_cm numeric, height_cm numeric, drainage boolean, saucer boolean, notes text)": {
+      "anon": false,
+      "authenticated": true,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "v"
+    },
+    "create_substrate(label text, parts jsonb)": {
+      "anon": false,
+      "authenticated": true,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "v"
+    },
+    "create_supplement(label text, role supplement_role, form supplement_form, supplies nutrient[], method feed_method)": {
+      "anon": false,
+      "authenticated": true,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "v"
+    },
+    "create_task(title text, kind task_kind, plant text, due_on date, priority smallint, detail text)": {
+      "anon": false,
+      "authenticated": true,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "v"
+    },
+    "diagnose(plant text, condition condition, phase phenophase, symptoms symptom[], disorders disorder[], pests jsonb, note text, at timestamp with time zone)": {
+      "anon": false,
+      "authenticated": true,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "v"
+    },
+    "emit(owner uuid, ids uuid[], type event_type, ts timestamp with time zone, data jsonb, note text, photo_url text)": {
+      "anon": false,
+      "authenticated": false,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "v"
+    },
+    "enum_values(t regtype)": {
+      "anon": false,
+      "authenticated": false,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": false,
+      "public": false,
+      "volatility": "s"
+    },
+    "event_schema(t event_type)": {
+      "anon": false,
+      "authenticated": true,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": false,
+      "public": false,
+      "volatility": "i"
+    },
+    "events_immutable()": {
+      "anon": false,
+      "authenticated": false,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "v"
+    },
+    "events_project()": {
+      "anon": false,
+      "authenticated": false,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "v"
+    },
+    "fail(code text, detail jsonb, hint text)": {
+      "anon": false,
+      "authenticated": false,
+      "config": null,
+      "definer": false,
+      "public": false,
+      "volatility": "v"
+    },
+    "feed(supplement text, plants jsonb, dose_factor numeric, method feed_method, note text, at timestamp with time zone)": {
+      "anon": false,
+      "authenticated": true,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "v"
+    },
+    "handle_new_user()": {
+      "anon": false,
+      "authenticated": false,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "v"
+    },
+    "hold_feeds(owner uuid, plant uuid, ts timestamp with time zone, days integer)": {
+      "anon": false,
+      "authenticated": false,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "v"
+    },
+    "insert_event(owner uuid, plant uuid, type event_type, ts timestamp with time zone, data jsonb, note text, photo_url text)": {
+      "anon": false,
+      "authenticated": false,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "v"
+    },
+    "jbool(field text, v jsonb)": {
+      "anon": false,
+      "authenticated": false,
+      "config": null,
+      "definer": false,
+      "public": false,
+      "volatility": "i"
+    },
+    "jdate(field text, v jsonb)": {
+      "anon": false,
+      "authenticated": false,
+      "config": null,
+      "definer": false,
+      "public": false,
+      "volatility": "i"
+    },
+    "jnum(field text, v jsonb)": {
+      "anon": false,
+      "authenticated": false,
+      "config": null,
+      "definer": false,
+      "public": false,
+      "volatility": "i"
+    },
+    "local_date(ts timestamp with time zone)": {
+      "anon": false,
+      "authenticated": true,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": false,
+      "public": false,
+      "volatility": "s"
+    },
+    "me()": {
+      "anon": false,
+      "authenticated": false,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": false,
+      "public": false,
+      "volatility": "s"
+    },
+    "measure(plant text, height_cm numeric, canopy_cm numeric, trunk_mm numeric, note text, at timestamp with time zone)": {
+      "anon": false,
+      "authenticated": true,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "v"
+    },
+    "move(plants jsonb, location location_zone, light light_level, note text, at timestamp with time zone)": {
+      "anon": false,
+      "authenticated": true,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "v"
+    },
+    "note(text text, plants jsonb, at timestamp with time zone)": {
+      "anon": false,
+      "authenticated": true,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "v"
+    },
+    "photo(path text, plants jsonb, shot photo_shot, note text, at timestamp with time zone)": {
+      "anon": false,
+      "authenticated": true,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "v"
+    },
+    "project_plant(p uuid)": {
+      "anon": false,
+      "authenticated": false,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "v"
+    },
+    "project_pot(p uuid)": {
+      "anon": false,
+      "authenticated": false,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "v"
+    },
+    "prune(plant text, part prune_part, note text, at timestamp with time zone)": {
+      "anon": false,
+      "authenticated": true,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "v"
+    },
+    "repot(plant text, pot text, substrate text, roots root_condition, root_pruned boolean, hold_feed_days integer, note text, at timestamp with time zone)": {
+      "anon": false,
+      "authenticated": true,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "v"
+    },
+    "resolve_pot(owner uuid, ref text)": {
+      "anon": false,
+      "authenticated": false,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "s"
+    },
+    "resolve_substrate(owner uuid, ref text)": {
+      "anon": false,
+      "authenticated": false,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "s"
+    },
+    "resolve_supplement(owner uuid, ref text)": {
+      "anon": false,
+      "authenticated": false,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "s"
+    },
+    "resolve_taxon(ref text)": {
+      "anon": false,
+      "authenticated": false,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": false,
+      "public": false,
+      "volatility": "s"
+    },
+    "retire_pot(pot text)": {
+      "anon": false,
+      "authenticated": true,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "v"
+    },
+    "select_plants(owner uuid, selector jsonb)": {
+      "anon": false,
+      "authenticated": false,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "s"
+    },
+    "set_updated_at()": {
+      "anon": false,
+      "authenticated": false,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": false,
+      "public": false,
+      "volatility": "v"
+    },
+    "targets(owner uuid, selector jsonb)": {
+      "anon": false,
+      "authenticated": false,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "s"
+    },
+    "treat(plants jsonb, pest pest, agent text, note text, at timestamp with time zone)": {
+      "anon": false,
+      "authenticated": true,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "v"
+    },
+    "update_feed(plants jsonb, supplement text, patch jsonb)": {
+      "anon": false,
+      "authenticated": true,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "v"
+    },
+    "update_plant(plants jsonb, patch jsonb)": {
+      "anon": false,
+      "authenticated": true,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "v"
+    },
+    "update_pot(pot text, patch jsonb)": {
+      "anon": false,
+      "authenticated": true,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "v"
+    },
+    "void_event(event bigint, reason text)": {
+      "anon": false,
+      "authenticated": true,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "v"
+    },
+    "water(plants jsonb, method watering_method, ml integer, at timestamp with time zone)": {
+      "anon": false,
+      "authenticated": true,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "v"
+    },
+    "wipe_garden()": {
+      "anon": false,
+      "authenticated": true,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "public": false,
+      "volatility": "v"
+    }
+  },
+  "indexes": {
+    "pest_case_open_key": "CREATE UNIQUE INDEX pest_case_open_key ON public.pest_case USING btree (plant_id, pest) WHERE (closed_at IS NULL)"
+  },
+  "policies": {
+    "care_profile_read on care_profile": {
+      "cmd": "r",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "true"
+    },
+    "events_owner_select on events": {
+      "cmd": "r",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "(owner_id = ( SELECT auth.uid() AS uid))"
+    },
+    "feed_override_owner_select on feed_override": {
+      "cmd": "r",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "(owner_id = ( SELECT auth.uid() AS uid))"
+    },
+    "pest_case_owner_select on pest_case": {
+      "cmd": "r",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "(owner_id = ( SELECT auth.uid() AS uid))"
+    },
+    "plants_owner_select on plants": {
+      "cmd": "r",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "(owner_id = ( SELECT auth.uid() AS uid))"
+    },
+    "pots_owner_select on pots": {
+      "cmd": "r",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "(owner_id = ( SELECT auth.uid() AS uid))"
+    },
+    "profiles_self on profiles": {
+      "cmd": "*",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "(id = ( SELECT auth.uid() AS uid))"
+    },
+    "programme_read on programme": {
+      "cmd": "r",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "true"
+    },
+    "substrate_part_read on substrate_part": {
+      "cmd": "r",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "(EXISTS ( SELECT 1\n   FROM substrate s\n  WHERE ((s.id = substrate_part.substrate_id) AND ((s.owner_id IS NULL) OR (s.owner_id = ( SELECT auth.uid() AS uid))))))"
+    },
+    "substrate_read on substrate": {
+      "cmd": "r",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "((owner_id IS NULL) OR (owner_id = ( SELECT auth.uid() AS uid)))"
+    },
+    "supplement_read on supplement": {
+      "cmd": "r",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "((owner_id IS NULL) OR (owner_id = ( SELECT auth.uid() AS uid)))"
+    },
+    "tasks_owner_select on tasks": {
+      "cmd": "r",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "(owner_id = ( SELECT auth.uid() AS uid))"
+    },
+    "taxon_read on taxon": {
+      "cmd": "r",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "true"
+    }
+  },
+  "rls": {
+    "care_profile": {
+      "enabled": true,
+      "forced": true
+    },
+    "events": {
+      "enabled": true,
+      "forced": true
+    },
+    "feed_override": {
+      "enabled": true,
+      "forced": true
+    },
+    "pest_case": {
+      "enabled": true,
+      "forced": true
+    },
+    "plants": {
+      "enabled": true,
+      "forced": true
+    },
+    "pots": {
+      "enabled": true,
+      "forced": true
+    },
+    "profiles": {
+      "enabled": true,
+      "forced": true
+    },
+    "programme": {
+      "enabled": true,
+      "forced": true
+    },
+    "substrate": {
+      "enabled": true,
+      "forced": true
+    },
+    "substrate_part": {
+      "enabled": true,
+      "forced": true
+    },
+    "supplement": {
+      "enabled": true,
+      "forced": true
+    },
+    "tasks": {
+      "enabled": true,
+      "forced": true
+    },
+    "taxon": {
+      "enabled": true,
+      "forced": true
+    }
+  },
+  "select_grants": {
+    "care_profile": [
+      "authenticated"
+    ],
+    "due": [
+      "authenticated"
+    ],
+    "events": [
+      "authenticated"
+    ],
+    "feed_override": [
+      "authenticated"
+    ],
+    "garden": [
+      "authenticated"
+    ],
+    "pest_case": [
+      "authenticated"
+    ],
+    "plant_feed": [
+      "authenticated"
+    ],
+    "plants": [
+      "authenticated"
+    ],
+    "pots": [
+      "authenticated"
+    ],
+    "pots_view": [
+      "authenticated"
+    ],
+    "profiles": [
+      "authenticated",
+      "service_role"
+    ],
+    "programme": [
+      "authenticated"
+    ],
+    "substrate": [
+      "authenticated"
+    ],
+    "substrate_part": [
+      "authenticated"
+    ],
+    "supplement": [
+      "authenticated"
+    ],
+    "tasks": [
+      "authenticated"
+    ],
+    "taxon": [
+      "authenticated"
+    ]
+  },
+  "triggers": {
+    "care_profile_global_only on care_profile": "CREATE TRIGGER care_profile_global_only BEFORE INSERT OR UPDATE ON public.care_profile FOR EACH ROW EXECUTE FUNCTION catalog_global_only()",
+    "events_immutable on events": "CREATE TRIGGER events_immutable BEFORE UPDATE ON public.events FOR EACH ROW EXECUTE FUNCTION events_immutable()",
+    "events_project on events": "CREATE TRIGGER events_project AFTER INSERT OR UPDATE OF voided_at ON public.events FOR EACH ROW EXECUTE FUNCTION events_project()",
+    "profiles_set_updated_at on profiles": "CREATE TRIGGER profiles_set_updated_at BEFORE UPDATE ON public.profiles FOR EACH ROW EXECUTE FUNCTION set_updated_at()",
+    "programme_global_only on programme": "CREATE TRIGGER programme_global_only BEFORE INSERT OR UPDATE ON public.programme FOR EACH ROW EXECUTE FUNCTION catalog_global_only()"
+  },
+  "view_notnull": {
+    "due.item": "@notNull",
+    "due.kind": "@notNull",
+    "garden.attention": "@notNull",
+    "garden.cover_is_pinned": "@notNull",
+    "garden.disorders": "@notNull",
+    "garden.individuals": "@notNull",
+    "garden.name": "@notNull",
+    "garden.never_fed": "@notNull",
+    "garden.plant_id": "@notNull",
+    "garden.pot_fit": "@notNull",
+    "garden.repot_due": "@notNull",
+    "garden.symptoms": "@notNull",
+    "plant_feed.dose_factor": "@notNull",
+    "plant_feed.label": "@notNull",
+    "plant_feed.plant_id": "@notNull",
+    "plant_feed.role": "@notNull",
+    "plant_feed.status": "@notNull",
+    "plant_feed.supplement_id": "@notNull",
+    "pots_view.label": "@notNull",
+    "pots_view.pot_id": "@notNull",
+    "pots_view.saucer": "@notNull",
+    "pots_view.status": "@notNull"
+  },
+  "views": {
+    "due": "security_invoker=on",
+    "garden": "security_invoker=on",
+    "plant_feed": "security_invoker=on",
+    "pots_view": "security_invoker=on"
+  },
+  "write_grants": [
+    {
+      "grantee": "authenticated",
+      "privilege": "UPDATE",
+      "table": "profiles"
+    },
+    {
+      "grantee": "service_role",
+      "privilege": "DELETE",
+      "table": "profiles"
+    },
+    {
+      "grantee": "service_role",
+      "privilege": "INSERT",
+      "table": "profiles"
+    },
+    {
+      "grantee": "service_role",
+      "privilege": "REFERENCES",
+      "table": "profiles"
+    },
+    {
+      "grantee": "service_role",
+      "privilege": "TRIGGER",
+      "table": "profiles"
+    },
+    {
+      "grantee": "service_role",
+      "privilege": "TRUNCATE",
+      "table": "profiles"
+    },
+    {
+      "grantee": "service_role",
+      "privilege": "UPDATE",
+      "table": "profiles"
+    }
+  ]
+}

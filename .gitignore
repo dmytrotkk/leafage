@@ -1,0 +1,23 @@
+# dependencies
+node_modules
+
+# build output
+dist
+
+# env: copy .env.example to .env (the publishable key in it is public by design)
+.env
+.env.local
+*.local
+
+# misc
+.DS_Store
+*.log
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example
+
+# astro
+.astro

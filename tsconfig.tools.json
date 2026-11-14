@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tools.tsbuildinfo",
+    "types": ["bun"],
+    "paths": { "@leafage/core": ["./core/index.ts"] }
+  },
+  "include": ["tools"]
+}

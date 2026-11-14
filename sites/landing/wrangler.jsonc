@@ -1,0 +1,11 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "leafage-landing",
+  "compatibility_date": "2026-11-10",
+  "routes": [{ "pattern": "leafage.garden", "custom_domain": true }],
+  "assets": {
+    "directory": "./dist",
+    "html_handling": "drop-trailing-slash",
+    "not_found_handling": "404-page"
+  }
+}

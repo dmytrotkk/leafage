@@ -1,0 +1,25 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "leafage",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-11-10",
+  "routes": [{ "pattern": "app.leafage.garden", "custom_domain": true }],
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "not_found_handling": "single-page-application",
+    "binding": "ASSETS",
+    "run_worker_first": ["/mcp", "/.well-known/oauth-protected-resource*"]
+  },
+  "vars": {
+    "SUPABASE_URL": "https://gwxcfwwihrowaetnxuvt.supabase.co",
+    "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_a3G_fROoaR3yn58IdKMDzA_v-elG-ot"
+  },
+  "secrets": {
+    "required": []
+  },
+  "triggers": {
+    "crons": ["17 6 * * *"]
+  }
+}

@@ -1,0 +1,10 @@
+# Leafage
+
+> Care app for a small balcony garden. Each user connects a chat assistant to a per-user MCP server, and that assistant is the main way to tend the garden.
+
+Leafage is coming soon. The app already runs at https://app.leafage.garden.
+
+## App
+
+- [Leafage app](https://app.leafage.garden): garden, plants, tasks and account
+- [MCP endpoint](https://app.leafage.garden/mcp): streamable HTTP, OAuth 2.1 with dynamic client registration, one tool per read or verb

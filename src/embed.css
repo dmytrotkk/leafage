@@ -1,0 +1,23 @@
+@import "./index.css";
+
+:root[data-host-styles] {
+  --background: var(--color-background-primary);
+  --foreground: var(--color-text-primary);
+  --card: var(--color-background-secondary);
+  --card-foreground: var(--color-text-primary);
+  --muted-foreground: var(--color-text-secondary);
+  --border: var(--color-border-primary);
+}
+
+#root > main {
+  --inset: calc(var(--spacing) * 4);
+  padding: calc(var(--inset) + var(--safe-top, 0px)) calc(var(--inset) + var(--safe-right, 0px)) calc(var(--inset) + var(--safe-bottom, 0px))
+    calc(var(--inset) + var(--safe-left, 0px));
+}
+
+html,
+body {
+  min-height: 0;
+  background: transparent;
+  font-family: var(--font-sans, ui-sans-serif, system-ui, sans-serif);
+}
